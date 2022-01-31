@@ -10,6 +10,122 @@ namespace HackerRankWeek4
     class Result
     {
         /*
+         *  https://www.hackerrank.com/challenges/one-month-preparation-kit-no-prefix-set/problem
+         */
+        public static void noPrefix(List<string> words)
+        {
+            Dictionary<string, int> map = new Dictionary<string, int>(new StringMaskComparer());
+            for (int i = 0; i < words.Count; i++)
+            {
+                if (map.ContainsKey(words[i].PadRight(60, '*')))
+                {
+                    Console.WriteLine("BAD SET");
+                    Console.WriteLine(words[i]);
+                    return;
+                }
+                else
+                {
+                    map.Add(words[i].PadRight(60, '*'), 1);
+                }
+            }
+
+            Console.WriteLine("GOOD SET");
+
+        }
+        /*
+         * https://www.hackerrank.com/challenges/one-month-preparation-kit-lilys-homework/problem
+         * 
+         */
+        public static int lilysHomework(List<int> arr)
+        {
+
+            // Traverse array and create map of value -> position
+            SortedDictionary<int, int> map = new SortedDictionary<int, int>();
+            List<int> arr2 = new List<int>();
+            for (int i = 0; i < arr.Count; i++)
+            {
+                map.Add(arr[i], i);
+                arr2.Add(arr[i]);
+            }
+
+            Dictionary<int, int> map2 = new Dictionary<int, int>();
+            for (int i = arr.Count - 1; i >= 0; i--)
+            {
+                map2.Add(map.ElementAt(i).Key, map.ElementAt(i).Value);
+            }
+
+
+            // Count swaps
+            int c = 0;
+
+            // Traverse map
+            for (int i = 0; i < map.Count; i++)
+            {
+                // Check if element is not at it's right position
+                if (map.ElementAt(i).Value != i)
+                {
+                    // Increase counter
+                    c++;
+
+                    int p1 = map.ElementAt(i).Value;
+                    int p2 = i;
+                    int val1 = map.ElementAt(i).Key;
+                    int val2 = arr[i];
+
+                    // Swap positions at the map
+                    map[val1] = p2;
+                    map[val2] = p1;
+
+                    // Swap positions of numbers at the array
+                    arr[p2] = val1;
+                    arr[p1] = val2;
+
+                }
+            }
+
+            // Count swaps
+            int c2 = 0;
+
+            // Traverse map
+            for (int i = 0; i < map.Count; i++)
+            {
+                // Check if element is not at it's right position
+                if (map2.ElementAt(i).Value != i)
+                {
+                    // Increase counter
+                    c2++;
+
+                    int p1 = map2.ElementAt(i).Value;
+                    int p2 = i;
+                    int val1 = map2.ElementAt(i).Key;
+                    int val2 = arr2[i];
+
+                    // Swap positions at the map
+                    map2[val1] = p2;
+                    map2[val2] = p1;
+
+                    // Swap positions of numbers at the array
+                    arr2[p2] = val1;
+                    arr2[p1] = val2;
+                }
+            }
+
+            return Math.Min(c, c2);
+        }
+
+        /*
+         *    Traverse Binary Search Tree in Pre Order
+         */
+        public static void TraverseTreePreOrder( BSTreeNode treeNode)
+        {
+            if (treeNode != null)
+                Console.WriteLine(treeNode.Value);
+            if (treeNode.Left != null)
+                TraverseTreePreOrder(treeNode.Left);
+            if (treeNode.Right != null)
+                TraverseTreePreOrder(treeNode.Right);
+        }
+        /*
          * https://www.hackerrank.com/challenges/one-month-preparation-kit-equal-stacks/problem
          */
         public static int equalStacks(List<int> h1, List<int> h2, List<int> h3)
@@ -610,9 +726,61 @@ namespace HackerRankWeek4
             return r;
 
         }
+        /*   
+         *   Algorithim extracted from https://www.geeksforgeeks.org/minimum-number-of-swaps-required-to-sort-an-array-set-2
+         *   
+         *   NOT WORKING !!!!!!!!!
+         */
+        public static int lilysHomework0(List<int> arr)
+        {
 
+            // Create a sorted Map with values and their position
+            List<Tuple<int,int>> map1 = new List<Tuple<int,int>>();
+            int[] cArr = new int[arr.Count];
+
+            for ( int i =0; i<arr.Count; i++)
+            {
+                map1.Add(new Tuple<int,int>(arr[i],i));
+
+                cArr[i] = arr[i];
+            }
+
+            map1.Sort();
+
+            int c = 0;
+
+            // Taverse the map
+            for ( int i = 0; i<map1.Count; i++)
+            {
+                int number1 = map1[i].Item1;
+                int index1 = map1[i].Item2;
+                
+                if ( index1 != i )
+                {
+
+                    Tuple<int, int> tmp = new Tuple<int,int>(arr[0],map1[i].Item2);
+                    map1[map1[i].Item2] = map1[i];
+                    map1[i] = tmp;
+                    
+                    c++;
+                }
+            }
+
+            // debug
+            foreach (var i in map1)
+                Console.Write(i.Item2);
+            Console.WriteLine();
+
+            return c++;
+        }
 
     }
+    /*
+     * Used to creat a SortedList that allows duplicate Keys
+     * 
+     *     Got this model from StackOverflow.
+     *     I used this to solve Jesse and Cookies Challenge
+     */
 
     public class DuplicateKeyComparer<TKey> : IComparer<TKey> where TKey : IComparable
     {
@@ -627,4 +795,34 @@ namespace HackerRankWeek4
         }
     }
 
+    public class StringMaskComparer : IEqualityComparer<string>
+    {
+        public bool Equals(String x, String y)
+        {
+            int p1 = x.ToString().IndexOf('*');
+            int p2 = y.ToString().IndexOf('*');
+            if (p1 == p2)
+                return x == y;
+            else if (p1 > p2)
+                return x.ToString().Substring(0, p2) == y.ToString().Substring(0, p2);
+            else
+                return x.ToString().Substring(0, p1) == y.ToString().Substring(0, p1);
+        }
+        public int GetHashCode(string s)
+        {
+            return -1;
+        }
+    }
+
+    public class BSTreeNode
+    {
+        public BSTreeNode(int value)
+        {
+            Value = value;
+        }
+        public int Value { get; set; }
+        public BSTreeNode Left { get; set; }
+        public BSTreeNode Right { get; set; }
+
+    }
 }

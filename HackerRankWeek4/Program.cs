@@ -10,8 +10,56 @@ namespace HackerRankWeek4
     {
         static void Main(string[] args)
         {
-            //TestCookies();
-            TestJesseAndCookies_File();
+            TestNoPrefixSet();
+        }
+        static void TestNoPrefixSet()
+        {
+
+            List<string> words = new List<string>() { "abcd", "bcd", "abcde", "bcde" };
+            Result.noPrefix(words);
+            Console.WriteLine("Expected: BAD SET; abcde");
+
+            words = new List<string>() { "aab", "defgab", "abcde", "cedaaa", "bbbbbbbbbb", "jabjjjad" };
+            Result.noPrefix(words);
+            Console.WriteLine("Expected: GOOD SET");
+
+        }
+        static void TestTraverseBSTree()
+        {
+            BSTreeNode treeNode = new BSTreeNode(1)
+            {
+                Right = new BSTreeNode(2)
+                {
+                    Right = new BSTreeNode(5)
+                    {
+                        Left = new BSTreeNode(3)
+                        {
+                            Right = new BSTreeNode(4)
+                        },
+                        Right = new BSTreeNode(6)
+                    }
+                }
+            };
+
+            Result.TraverseTreePreOrder(treeNode);
+        }
+
+        static void TestLilysHomeWork()
+        {
+            List<int> list;
+
+            list = new() { 7, 15, 12, 3 };
+            Console.WriteLine(Result.lilysHomework(list));
+            Console.WriteLine("Expected 2");
+
+            list = new() { 2, 5, 3, 1 };
+            Console.WriteLine(Result.lilysHomework(list));
+            Console.WriteLine("Expected 2");
+
+            list = new() { 3, 4, 2, 5, 1 };
+            Console.WriteLine(Result.lilysHomework(list));
+            Console.WriteLine("Expected 2");
+
         }
         static void TestJesseAndCookies_File()
         {
