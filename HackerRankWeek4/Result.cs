@@ -10,6 +10,172 @@ namespace HackerRankWeek4
     class Result
     {
         /*
+         * https://www.hackerrank.com/challenges/one-month-preparation-kit-torque-and-development/problem
+         */
+        public static long roadsAndLibraries(int n, int c_lib, int c_road, List<List<int>> cities)
+        {
+            // Count roads
+            int roads = 0;
+
+            // Count libraries
+            int libs;
+
+            // Count segments
+            int seg = 0;
+
+            // Next segment index
+            int iSeg = 0;
+
+            // Map of cities and segment they belong
+            Dictionary<int, int> map = new Dictionary<int, int>();
+
+            // Traverse all possible roads
+            for ( int i=0; i<cities.Count; i++)
+            {
+                // Get pair of cities
+                int c1 = cities[i][0];
+                int c2 = cities[i][1];
+
+                // Check if in map
+                bool c1InMap = map.ContainsKey(c1);
+                bool c2InMap = map.ContainsKey(c2);
+
+                // If both not in map
+                if ( !c1InMap && !c2InMap)
+                {
+                    // Build a road between them
+                    roads++;
+                    // Increase segment count, and index
+                    seg++;
+                    iSeg++;
+                    // Insert both into map
+                    map.Add(c1, iSeg);
+                    map.Add(c2, iSeg);
+                }
+                // Only c1 in map
+                else if ( c1InMap && !c2InMap)
+                {
+                    // Build a road between them
+                    roads++;
+                    // Insert c2 in map, with segment ( value ) of c1
+                    map.Add(c2, map[c1]);
+                }
+                // Only c2 in map
+                else if (c2InMap && !c1InMap)
+                {
+                    // Build a road between them
+                    roads++;
+                    // Insert c2 in map, with segment ( value ) of c1
+                    map.Add(c1, map[c2]);
+                }
+                // Both in map, different segments
+                else if ( c1InMap && c2InMap && map[c1] != map[c2])
+                {
+                    // Build a road between them
+                    roads++;
+
+                    // Merge segments
+                    int i1 = map[c1];
+                    int i2 = map[c2];
+
+                    foreach ( KeyValuePair<int,int> kv in map)
+                    {
+                        if (kv.Value == i2)
+                            map[kv.Key] = i1;
+                    }
+
+                    seg--;
+                }
+            }
+
+            // Extra cities not in map?
+            if (n > map.Count)
+                seg+= n - map.Count;
+
+            // How many libs do we need ?
+            libs = seg;
+
+            // Cost of libs > segments
+            if ( c_lib > c_road)
+            {
+                // Whats the cost ?
+                return (long)c_road * roads + (long)c_lib * libs;
+            }
+            else
+            {
+                return Math.Min((long)c_road * roads + (long)c_lib * libs, (long)n * c_lib);
+            }
+
+        }
+        /*
+         * https://www.hackerrank.com/challenges/one-month-preparation-kit-binary-search-tree-lowest-common-ancestor/problem
+         */
+        public static BSTreeNode LowerCommonAncestral ( BSTreeNode node, int v1, int v2)
+        {
+            if (v1 < node.Value && v2 < node.Value)
+                return LowerCommonAncestral(node.Left, v1, v2);
+            else if (v1 > node.Value && v2 > node.Value)
+                return LowerCommonAncestral(node.Right, v1, v2);
+            else
+                return node;
+        }
+
+        /*
+         * https://www.hackerrank.com/challenges/one-month-preparation-kit-castle-on-the-grid/problem
+         */
+        public static int minimumMoves(List<string> grid, int startX, int startY, int goalX, int goalY)
+        {
+
+            // Mark blocked position
+            int blockedX = 0, blockedY = 0;
+            for ( int i=0; i<grid.Count; i++)
+            {
+                if (grid.ElementAt(i).Contains('X'))
+                {
+                    blockedY = grid.ElementAt(i).IndexOf('X'); 
+                    blockedX = i;
+                }
+            }
+
+            int moves;
+
+            // Goal equals start
+            if (startX == goalX && startY == goalY)
+                moves = 0;
+
+            // Goal is at the same row
+            else if (startY == goalY)
+            {
+                // Row is cleared
+                if (blockedY != goalY)
+                    moves = 1;
+                // Row is blocked
+                else if ((startX < blockedX && blockedX < goalX) || (startX > blockedX && blockedX > goalX))
+                    moves = 3;
+                else
+                    moves = 1;
+            }
+            // Goal is at the same column
+            else if (startX == goalX)
+            {
+                // Column is cleared
+                if (blockedX != goalX)
+                    moves = 1;
+                // Column is blocked
+                else if ((startY < blockedY && blockedY < goalY) || (startY > blockedY && blockedY > goalY))
+                    moves = 3;
+                else
+                    moves = 1;
+            }
+            // All other, can get there in 2 moves
+            else
+                moves = 2;
+
+
+            return moves;
+
+        }
+        /*
          *  https://www.hackerrank.com/challenges/one-month-preparation-kit-no-prefix-set/problem
          */
         public static void noPrefix(List<string> words)
@@ -17,7 +183,7 @@ namespace HackerRankWeek4
             Dictionary<string, int> map = new Dictionary<string, int>(new StringMaskComparer());
             for (int i = 0; i < words.Count; i++)
             {
-                if (map.ContainsKey(words[i].PadRight(60, '*')))
+                if (map.ContainsKey(words[i]))
                 {
                     Console.WriteLine("BAD SET");
                     Console.WriteLine(words[i]);
@@ -25,7 +191,7 @@ namespace HackerRankWeek4
                 }
                 else
                 {
-                    map.Add(words[i].PadRight(60, '*'), 1);
+                    map.Add(words[i], 1);
                 }
             }
 
@@ -799,14 +965,14 @@ namespace HackerRankWeek4
     {
         public bool Equals(String x, String y)
         {
-            int p1 = x.ToString().IndexOf('*');
-            int p2 = y.ToString().IndexOf('*');
-            if (p1 == p2)
+            int l1 = x.ToString().Length;
+            int l2 = y.ToString().Length;
+            if (l1 == l2)
                 return x == y;
-            else if (p1 > p2)
-                return x.ToString().Substring(0, p2) == y.ToString().Substring(0, p2);
+            else if (l1 > l2)
+                return x.ToString().Substring(0, l2) == y.ToString().Substring(0, l2);
             else
-                return x.ToString().Substring(0, p1) == y.ToString().Substring(0, p1);
+                return x.ToString().Substring(0, l1) == y.ToString().Substring(0, l1);
         }
         public int GetHashCode(string s)
         {

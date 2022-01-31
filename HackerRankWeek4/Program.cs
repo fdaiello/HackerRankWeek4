@@ -10,7 +10,89 @@ namespace HackerRankWeek4
     {
         static void Main(string[] args)
         {
-            TestNoPrefixSet();
+            TestRoadsAndLibrariesFile();
+        }
+        static void TestRoadsAndLibrariesFile()
+        {
+            TextWriter textWriter = new StreamWriter(Directory.GetCurrentDirectory()+"\\output03.txt", true);
+            StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\input03.txt");
+
+            int q = Convert.ToInt32(sr.ReadLine().Trim());
+
+            for (int qItr = 0; qItr < q; qItr++)
+            {
+                string[] firstMultipleInput = sr.ReadLine().TrimEnd().Split(' ');
+
+                int n = Convert.ToInt32(firstMultipleInput[0]);
+
+                int m = Convert.ToInt32(firstMultipleInput[1]);
+
+                int c_lib = Convert.ToInt32(firstMultipleInput[2]);
+
+                int c_road = Convert.ToInt32(firstMultipleInput[3]);
+
+                List<List<int>> cities = new List<List<int>>();
+
+                for (int i = 0; i < m; i++)
+                {
+                    cities.Add(sr.ReadLine().TrimEnd().Split(' ').ToList().Select(citiesTemp => Convert.ToInt32(citiesTemp)).ToList());
+                }
+
+                long result = Result.roadsAndLibraries(n, c_lib, c_road, cities);
+
+                textWriter.WriteLine(result);
+            }
+
+            textWriter.Flush();
+            textWriter.Close();
+
+        }
+        static void TestRoadsAndLibraries()
+        {
+            List<List<int>> cities = new()
+            {
+                new() { 1, 7 },
+                new() { 1, 3 },
+                new() { 1, 2 },
+                new() { 2, 3 },
+                new() { 5, 6 },
+                new() { 6, 8 }
+            };
+
+            int c_road = 2;
+            int c_lib = 3;
+            int n = 7;
+
+            Console.WriteLine(Result.roadsAndLibraries(n, c_lib, c_road, cities));
+            Console.WriteLine("Expected 16");
+
+
+            cities = new()
+            {
+                new() { 1, 2 },
+                new() { 1, 3 },
+                new() { 1, 4 },
+            };
+
+            n = 5;
+            c_road = 1;
+            c_lib = 6;
+
+            Console.WriteLine(Result.roadsAndLibraries(n, c_lib, c_road, cities));
+            Console.WriteLine("Expected 15");
+
+        }
+        static void TestMinimumMoves()
+        {
+            List<string> grid = new List<string>(){ ".X.", ".X.", "..." };
+            int startX = 0;
+            int startY = 0;
+            int goalX = 0;
+            int goalY = 2;
+
+            Console.WriteLine(Result.minimumMoves(grid, startX, startY, goalX, goalY));
+            Console.WriteLine("Expected 3");
+
         }
         static void TestNoPrefixSet()
         {
