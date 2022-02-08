@@ -289,7 +289,7 @@ namespace HackerRankWeek4
         /* 
          * Fastest that I could, but not enough
          */
-        public static int cookies(int k, List<int> A)
+        public static int cookies3(int k, List<int> A)
         {
             SortedList<int, int> A1 = new SortedList<int, int>(new DuplicateKeyComparer<int>());
 
@@ -314,6 +314,33 @@ namespace HackerRankWeek4
 
             return i;
         }
+        /* 
+         *   Using MinHeap as Priority Queue
+         */
+        public static int cookies(int k, List<int> A)
+        {
+            Minheap<int> queue = new Minheap<int>(A.Count);
+
+            foreach (int x in A.OrderBy(p => p))
+                queue.Insert(x);
+
+            int i = 0;
+
+            int cNew;
+
+            while (queue.Count()>1 && queue.Peek() < k)
+            {
+                cNew = queue.Remove() + 2 * queue.Remove();
+                queue.Insert(cNew);
+                i++;
+            }
+
+            if (queue.Count() < 2 && queue.Peek() < k)
+                i = -1;
+
+            return i;
+        }
+
         /*
          *    Lets try not removing from queue
          */

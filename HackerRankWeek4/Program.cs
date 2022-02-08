@@ -10,7 +10,50 @@ namespace HackerRankWeek4
     {
         static void Main(string[] args)
         {
-            TestNoPrefixSet();
+            TestCookiesFile();
+        }
+        static void TestCookiesFile()
+        {
+            TextWriter textWriter = new StreamWriter(Directory.GetCurrentDirectory()+"\\output18.txt", true);
+            StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\input18.txt");
+
+            string[] firstMultipleInput = sr.ReadLine().TrimEnd().Split(' ');
+
+            int n = Convert.ToInt32(firstMultipleInput[0]);
+
+            int k = Convert.ToInt32(firstMultipleInput[1]);
+
+            List<int> A = sr.ReadLine().TrimEnd().Split(' ').ToList().Select(ATemp => Convert.ToInt32(ATemp)).ToList();
+
+            int result = Result.cookies(k, A);
+
+            textWriter.WriteLine(result);
+
+            textWriter.Flush();
+            textWriter.Close();
+
+        }
+        static void TestMinHeap()
+        {
+            Minheap<int> heap = new Minheap<int>(100);
+
+            heap.Insert(999);
+            heap.Insert(9);
+            heap.Insert(6);
+            heap.Insert(50);
+            heap.Insert(40);
+            heap.Insert(30);
+            heap.Insert(200);
+            heap.Insert(50);
+            heap.Insert(2);
+
+            heap.Remove();
+            heap.Remove();
+
+            while (heap.Any())
+            {
+                Console.Write(heap.Remove() + " ");
+            }
         }
         static void TestNoPrefixSet()
         {
